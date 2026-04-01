@@ -5,7 +5,7 @@ SIS (Student Information System)
 
 Project overview
 ----------------
-SIS is a simple Student Information System implemented with .NET 10 and Entity Framework Core. It follows a layered architecture with separate domain, application, infrastructure, and API projects. The solution manages students, courses, and enrollments using repositories and a unit-of-work pattern.
+SIS is a simple Student Information System implemented with .NET 10 and Entity Framework Core. It follows a layered clean-architecture with separate domain, application, infrastructure, and API projects. The solution manages students, courses, and enrollments using repositories and a unit-of-work pattern.
 
 Repository structure
 --------------------
@@ -53,19 +53,3 @@ Notes
 -----
 - The solution uses a repository and unit-of-work pattern. See `SIS.Infrastructure/Repositories` for implementations and `SIS.Domain/Common/Interfaces` for interfaces.
 - If you change connection strings or provider settings, ensure `ApplicationDbContext` in `SIS.Infrastructure/Persistence/Contexts` is configured accordingly.
-
-Testing
--------
-No test projects included by default. Add unit/integration tests for services, repositories, and API controllers as needed.
-
-Contributing
-------------
-Contributions are welcome. Open issues or submit pull requests with a clear description of changes and rationale.
-
-License
--------
-No license file is included. Add an appropriate `LICENSE` file (for example, MIT) if you intend to publish the repository.
-
-Contact
--------
-Inspect `SIS.Infrastructure/Persistence/Contexts/ApplicationDbContext.cs` and repository implementations for details about the data model and EF Core configuration.
