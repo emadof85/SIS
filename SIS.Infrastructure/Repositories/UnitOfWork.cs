@@ -12,12 +12,14 @@ namespace SIS.Infrastructure.Repositories
         private readonly ApplicationDbContext _context;
         public IStudentRepository Students { get; }
         public IGenericRepository<Course> Courses { get; }
+        public IGenericRepository<StudentCourse> StudentCourses { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Students = new StudentRepository(_context);
             Courses = new GenericRepository<Course>(_context);
+            StudentCourses = new GenericRepository<StudentCourse>(_context);
         }
 
         public async Task<int> CompleteAsync() => await _context.SaveChangesAsync();

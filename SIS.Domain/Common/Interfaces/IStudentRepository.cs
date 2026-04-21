@@ -10,6 +10,6 @@ namespace SIS.Domain.Common.Interfaces
         Task<Student?> GetByStudentNumberAsync(string studentNumber);
 
         // Include courses for the dashboard view
-        Task<Student?> GetStudentWithCoursesAsync(int id);
+        Task<Student?> GetStudentWithCoursesAsync(Guid id);
     }
 }

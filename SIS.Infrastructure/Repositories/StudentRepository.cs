@@ -18,7 +18,7 @@ namespace SIS.Infrastructure.Repositories
                 .FirstOrDefaultAsync(s => s.StudentNumber == studentNumber);
         }
 
-        public async Task<Student?> GetStudentWithCoursesAsync(int id)
+        public async Task<Student?> GetStudentWithCoursesAsync(Guid id)
         {
             return await _context.Students
                 .Include(s => s.StudentCourses)

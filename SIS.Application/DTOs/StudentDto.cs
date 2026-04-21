@@ -1,13 +1,10 @@
-﻿using SIS.Domain.Common;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace SIS.Domain
+namespace SIS.Application.DTOs
 {
-    public class Student : ApplicationUser
+    public class StudentDto
     {
-        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string PhoneNumber { get; set; }
@@ -15,7 +12,8 @@ namespace SIS.Domain
         public bool IsActive { get; set; }
         public string StudentNumber { get; set; }
 
-        // Navigation Property
-        public ICollection<StudentCourse> StudentCourses { get; set; }
+        // Related data
+        public List<int> CourseIds { get; set; } = new List<int>();
+        public List<string> CourseNames { get; set; } = new List<string>();
     }
 }
