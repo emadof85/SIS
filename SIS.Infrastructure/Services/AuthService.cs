@@ -5,7 +5,7 @@ using SIS.Domain;
 using LoginRequest = SIS.Application.DTOs.Auth.LoginRequest;
 using RegisterRequest = SIS.Application.DTOs.Auth.RegisterRequest;
 
-namespace SIS.Application.Services.Implementations
+namespace SIS.Infrastructure.Services
 {
     public class AuthService : IAuthService
     {

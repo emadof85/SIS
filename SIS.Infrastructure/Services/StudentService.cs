@@ -4,7 +4,7 @@ using SIS.Application.Services.Interfaces;
 using SIS.Domain.Common.Interfaces;
 using SIS.Domain;
 
-namespace SIS.Application.Services.Implementations
+namespace SIS.Infrastructure.Services
 {
     public class StudentService : IStudentService
     {

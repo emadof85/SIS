@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
-using SIS.Application.Services.Implementations;
 using SIS.Application.Services.Interfaces;
 using SIS.Domain.Common.Interfaces;
 using SIS.Infrastructure;
 using SIS.Infrastructure.Persistence.Contexts;
 using SIS.Infrastructure.Repositories;
 using SIS.Infrastructure.Seeds;
+using SIS.Infrastructure.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -79,22 +79,45 @@ builder.Services.AddAuthentication(options =>
 // 2. OpenAPI with Security Requirements
 builder.Services.AddOpenApi(options =>
 {
-
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    _ = options.AddDocumentTransformer((document, context, cancellationToken) =>
     {
+        // 1. Initialize Components
         document.Components ??= new OpenApiComponents();
-        document.Components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme
+
+        // 2. Initialize the Dictionary using the INTERFACE type (IOpenApiSecurityScheme)
+        // This fixes error CS0019
+        document.Components.SecuritySchemes ??= new Dictionary<string, IOpenApiSecurityScheme>();
+
+        const string schemeId = "Bearer";
+
+        // Use the interface type for the variable to ensure compatibility
+        IOpenApiSecurityScheme jwtScheme = new OpenApiSecurityScheme
         {
-            Name= "Authorization",
             Type = SecuritySchemeType.Http,
             Scheme = "bearer",
             BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "Please enter token"
-        });
-        document.Security = [new OpenApiSecurityRequirement {
-            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
-        }];
+            Description = "Enter your JWT token (e.g., 12345abcdef)."
+        };
+
+        // 3. Add the scheme
+        if (!document.Components.SecuritySchemes.ContainsKey(schemeId))
+        {
+            document.Components.SecuritySchemes.Add(schemeId, jwtScheme);
+        }
+
+        // 4. Initialize Security list if null
+        document.Security ??= new List<OpenApiSecurityRequirement>();
+
+        // Initialize SecurityRequirement using the interface list if needed
+        var securityRequirement = new OpenApiSecurityRequirement();
+
+        // In v3.x, use the specialized Reference class
+        var schemeReference = new OpenApiSecuritySchemeReference(schemeId, document);
+
+        securityRequirement.Add(schemeReference, new List<string>());
+
+        document.Security.Add(securityRequirement);
+
         return Task.CompletedTask;
     });
 });

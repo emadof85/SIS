@@ -2,11 +2,8 @@ using SIS.Application.DTOs;
 using SIS.Application.Services.Interfaces;
 using SIS.Domain.Common.Interfaces;
 using SIS.Domain;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace SIS.Application.Services.Implementations
+namespace SIS.Infrastructure.Services
 {
     public class CourseService : ICourseService
     {
@@ -28,7 +25,7 @@ namespace SIS.Application.Services.Implementations
             });
         }
 
-        public async Task<CourseDto?> GetByIdAsync(int id)
+        public async Task<CourseDto?> GetByIdAsync(Guid id)
         {
             var course = await _uow.Courses.GetByIdAsync(id);
             if (course == null) return null;
@@ -73,7 +70,7 @@ namespace SIS.Application.Services.Implementations
             await _uow.CompleteAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             var course = await _uow.Courses.GetByIdAsync(id);
             if (course == null) return;
