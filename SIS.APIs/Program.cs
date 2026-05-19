@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 using SIS.Application.Services.Implementations;
 using SIS.Application.Services.Interfaces;
 using SIS.Domain.Common.Interfaces;
@@ -18,10 +20,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
-
 
 // FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
@@ -77,12 +75,39 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-var app = builder.Build();
+// 1. Add the built-in OpenAPI service
+// 2. OpenAPI with Security Requirements
+builder.Services.AddOpenApi(options =>
+{
 
-// Configure the HTTP request pipeline.
+    options.AddDocumentTransformer((document, context, cancellationToken) =>
+    {
+        document.Components ??= new OpenApiComponents();
+        document.Components.SecuritySchemes!.Add("Bearer", new OpenApiSecurityScheme
+        {
+            Name= "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "Please enter token"
+        });
+        document.Security = [new OpenApiSecurityRequirement {
+            [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+        }];
+        return Task.CompletedTask;
+    });
+});
+
+// 2. Map the endpoint in the middleware section
+var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
+    // Generates the JSON document at /openapi/v1.json
     app.MapOpenApi();
+
+    // Adds a beautiful UI at /scalar/v1
+    app.MapScalarApiReference();
 }
 
 using (var scope = app.Services.CreateScope())
